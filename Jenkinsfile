@@ -28,11 +28,15 @@ pipeline{
                 sh 'mvn package'
             }
         }
-        stage('Push Image'){
-            script{
-                withCredentials([string(credentialsId: 'shreyas8191', variable: 'Shreyas8191')]) {
-                    sh'docker login -u image -p ${dockerhubpwd}'    
-                }
-                sh'docker push shreyas8191/app'
+        stage('run dockerfile'){
+          steps{
+               sh 'docker build -t myimg .'
+           }
+         }
+        stage('port expose'){
+            steps{
+                sh 'docker run -dt -p 8081:8081 --name c000 myimg'
+            }
+        } 
     }
 }
